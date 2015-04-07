@@ -21,8 +21,8 @@ case $OS in
 			MEMT="$(awk '/MemTotal/{print int($2/10^3)}' /proc/meminfo)" ;
 			MEM="$(( MEMT-MEMF ))/${MEMT}M" ;
 			else
-			MEMT="$(vmstat -h | awk 'NR==2{print $4}')"
-			MEMF="$(vmstat -h | awk 'NR==2{gsub(/M/,""); print $5}')"
+			MEMT="$(vmstat -h | awk 'NR==3{print $4}')"
+			MEMF="$(vmstat -h | awk 'NR==3{gsub(/M/,""); print $5}')"
 			MEM="$MEMF/$MEMT"
 			fi
 		fi
