@@ -8,7 +8,7 @@ should work on other unices too, as long as there are the /proc filesystem and s
 
 # todo
 
--cuter ascii art
--output more info
--maybe colors
+- cuter ascii art
+- output more info
+- maybe colors
 
