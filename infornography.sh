@@ -4,9 +4,9 @@ OS="$(uname -o)"
 UPTIME="$(uptime | awk '{gsub(/,/,""); print $3, $4}')"
 KERN="$(uname -s -r)"
 
-if test acpi; then
+command -v acpi && \
 BAT="battery: $(acpi | awk '{print $4}')"
-fi
+
 
 case $OS in
 	
