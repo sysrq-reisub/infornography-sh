@@ -3,31 +3,43 @@
 OS="$(uname -o)"
 UPTIME="$(uptime | awk '{gsub(/,/,""); print $3, $4}')"
 KERN="$(uname -s -r)"
-CPU="$(uname -p)"
 
 if test acpi; then
 BAT="battery: $(acpi | awk '{print $4}')"
 fi
 
-MEMF="$(cat /proc/meminfo | grep '^MemAvailable' | awk '{print int($2/10^3)}')"
-MEMT="$(cat /proc/meminfo | grep '^MemTotal' | awk '{print int($2/10^3)}')"
+case $OS in
+	
+	*BSD)
+		CPU="$(sysctl -n hw.model)"
+		MEM="$(top -n 1 -b | awk '/KiB Mem/{print int($5/10^3),"/",int($3/10^3)}')"	
+		;;
+	*Linux)
+		CPU="$(uname -p)"
+		MEMF="$(cat /proc/meminfo | awk '/MemAvailable/{print int($2/10^3)}')"
+		MEMT="$(cat /proc/meminfo | awk '/MemTotal/{print int($2/10^3)}')"
+		MEM="$(( MEMT-MEMF )) / $MEMT"
+		;;
+	*)
+		;;
+esac
 
 cat << EOF
                    .      .             
               .               .           
                                  .       
-          .                              
-                                    .   	$OS
-        .              ...xc. .         	$UPTIME
-        .            '.kdlKOl.;;.    .  	$KERN
-        .         ..,koxdokKKkkOc.  ..  	$CPU	
-         \/.'c... ,xOKxdlxOKXKK0xl..    	
-         /\.dxdoxk0KKkO:.oXXXXK:,;      	$(( MEMT-MEMF ))/$MEMT MB
-         .  .doxKXXXXX000XXXXXKxd'      	$BAT
-              .l0XXXXXXXXXXX00OXK.      	
-              .xdOKXXXXXXXXK0KKK:       	$SHELL
-              :xxxk0KXXXXXXKKKd.        	$TERM
-         .;;,:xxxxxxdxOKXXXKo'          
+          .                             	$USER@$HOSTNAME 
+                                    .   	
+        .              ...xc. .         	$OS
+        .            '.kdlKOl.;;.    .  	$UPTIME
+        .         ..,koxdokKKkkOc.  ..  	$KERN
+         \/.'c... ,xOKxdlxOKXKK0xl..    	$CPU	
+         /\.dxdoxk0KKkO:.oXXXXK:,;      	
+         .  .doxKXXXXX000XXXXXKxd'      	$MEM MB
+              .l0XXXXXXXXXXX00OXK.      	$BAT
+              .xdOKXXXXXXXXK0KKK:       	
+              :xxxk0KXXXXXXKKKd.        	$SHELL
+         .;;,:xxxxxxdxOKXXXKo'         		$TERM 
        .;llccdxxxxxxxxlc;,,.            
      'ooloxxdoldxxxxxxocx:..            
     ;kOOkkkOOkxoldxxxxk0kOk: ....'...   
