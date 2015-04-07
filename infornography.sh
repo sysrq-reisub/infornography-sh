@@ -12,15 +12,32 @@ case $OS in
 	*BSD)
 		CPU="$(sysctl -n hw.model)"
 		UPTIME="$(uptime | awk '{gsub(/,/,"") print $3 $4)}')"
-		MEM="$(top -n 1 -b | awk '/Memory/{print $3}')" # fix this	
+		MEM="$(top -n 1 -b | awk '/Memory/{print $3}')" 
+		
+		if test -z $MEM ; then
+			
+			if test -f /proc/meminfo ; then
+			MEMF="$(awk '/MemFree/{print int($2/10^3)}' /proc/meminfo)" ;
+			MEMT="$(awk '/MemTotal/{print int($2/10^3)}' /proc/meminfo)" ;
+			MEM="$(( MEMT-MEMF ))/${MEMT}M" ;
+			else
+			MEMT="$(vmstat -h | awk 'NR==2{print $4}')"
+			MEMF="$(vmstat -h | awk 'NR==2{gsub(/M/,""); print $5}')"
+			MEM="$MEMF/$MEMT"
+			fi
+		fi
 		;;
 	*Linux)
 		CPU="$(uname -p)"
 		UPTIME="$(awk '{print int($1/3600)}' /proc/uptime) hours up"
 		MEMF="$(awk '/MemAvailable/{print int($2/10^3)}' /proc/meminfo)"
 		MEMT="$(awk '/MemTotal/{print int($2/10^3)}' /proc/meminfo)"
+		if test -z "$MEMF" ; then
+			MEMF="$(awk '/MemFree/{print int($2/10^3)}' /proc/meminfo)" ;
+		fi			
 		MEM="$(( MEMT-MEMF ))/${MEMT}M"
-		;;
+
+				;;
 	*)
 		;;
 esac
