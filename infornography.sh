@@ -1,10 +1,9 @@
 #!/bin/sh
 
-OS="$(uname -o)"
-UPTIME="$(uptime | awk '{gsub(/,/,""); print $3, $4}')"
-KERN="$(uname -s -r)"
+OS="$(uname -s)"
+VERS="$(uname -r)"
 
-command -v acpi && \
+command -v acpi &> /dev/null && \
 BAT="battery: $(acpi | awk '{print $4}')"
 
 
@@ -12,13 +11,15 @@ case $OS in
 	
 	*BSD)
 		CPU="$(sysctl -n hw.model)"
-		MEM="$(top -n 1 -b | awk '/KiB Mem/{print int($5/10^3),"/",int($3/10^3)}')"	
+		UPTIME="$(uptime | awk '{gsub(/,/,"") print $3 $4)}')"
+		MEM="$(top -n 1 -b | awk '/Memory/{print $3}')" # fix this	
 		;;
 	*Linux)
 		CPU="$(uname -p)"
-		MEMF="$(cat /proc/meminfo | awk '/MemAvailable/{print int($2/10^3)}')"
-		MEMT="$(cat /proc/meminfo | awk '/MemTotal/{print int($2/10^3)}')"
-		MEM="$(( MEMT-MEMF )) / $MEMT"
+		UPTIME="$(awk '{print int($1/3600)}' /proc/uptime) hours up"
+		MEMF="$(awk '/MemAvailable/{print int($2/10^3)}' /proc/meminfo)"
+		MEMT="$(awk '/MemTotal/{print int($2/10^3)}' /proc/meminfo)"
+		MEM="$(( MEMT-MEMF ))/${MEMT}M"
 		;;
 	*)
 		;;
@@ -28,14 +29,14 @@ cat << EOF
                    .      .             
               .               .           
                                  .       
-          .                             	$USER@$HOSTNAME 
+          .                             	$USER@$(/bin/hostname)
                                     .   	
         .              ...xc. .         	$OS
-        .            '.kdlKOl.;;.    .  	$UPTIME
-        .         ..,koxdokKKkkOc.  ..  	$KERN
+        .            '.kdlKOl.;;.    .  	$VERS
+        .         ..,koxdokKKkkOc.  ..  	$UPTIME
          \/.'c... ,xOKxdlxOKXKK0xl..    	$CPU	
          /\.dxdoxk0KKkO:.oXXXXK:,;      	
-         .  .doxKXXXXX000XXXXXKxd'      	$MEM MB
+         .  .doxKXXXXX000XXXXXKxd'      	$MEM
               .l0XXXXXXXXXXX00OXK.      	$BAT
               .xdOKXXXXXXXXK0KKK:       	
               :xxxk0KXXXXXXKKKd.        	$SHELL
