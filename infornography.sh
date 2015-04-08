@@ -1,8 +1,22 @@
 #!/bin/sh
 
+colors() {
+    
 if test "$COLORTERM" || test "${TERM#'*color'}" ; then
     COLOR=true
+else
+    return
 fi
+
+}
+
+for arg in "$@"; do
+    case "$arg" in
+	"-c")
+	    colors
+	    ;;
+    esac
+done
 
 OS="$(uname -s)"
 VERS="$(uname -r)"
@@ -15,7 +29,7 @@ case $OS in
         CPU="$(sysctl -n hw.model)"
         UPTIME="$(uptime | awk '{gsub(/,/,"") print $3 $4)}')"
         MEM="$(top -n 1 -b | awk '/Memory/{print $3}')" 
-        if test -z $MEM; then
+        if test -z "$MEM"; then
             if test -f /proc/meminfo; then
                 MEMF="$(awk '/MemFree/{print int($2/10^3)}' /proc/meminfo)"
                 MEMT="$(awk '/MemTotal/{print int($2/10^3)}' /proc/meminfo)"
