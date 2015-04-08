@@ -40,7 +40,7 @@ case $OS in
         fi
         ;;
     *Linux)
-        CPU="$(awk '/model name/{$1=$2=$3=""; print $0}' /proc/cpuinfo | sed 's/^[ \t]*//' | uniq)"
+        CPU="$(awk '/model name/{$1=$2=$3=""; sub(/ */,""); print $0}' /proc/cpuinfo | uniq)"
         UPTIME="$(awk '{print int($1/3600)}' /proc/uptime) hours up"
         MEMF="$(awk '/MemAvailable/{print int($2/10^3)}' /proc/meminfo)"
         if test -z "$MEMF"; then
@@ -54,43 +54,30 @@ case $OS in
 esac
 
 cat << EOF
-                        ..........                        
-                   ..''..'''''''''''..                    
-                 .''''''''';:clooool:,''.                 
-        .',:::,'''''''''cdO0000kc:clkOd:'''.              
-       ''cO0Ol''''''''ck0000000Ol'..l000d,''.             
-      .'.cO0l''''''',k000000000000OO00000O:'.             
-       .'.,c'.....''x0000000kdlc:;;;;:okO0O;'.            
-         ..........;O00Od:'.            .ckd'..           $USER@$(/bin/hostname)
-          .........,xc'        .......    .,...           
-          ..........     ................    ...          $OS
-          ........     ......dxc...........   ..          $VERS
-         ........   ...c...''0Xx:............. ..         $UPTIME
-         ........  .;o.x,.,;c0Xkl;,..c.,...... ..         $CPU
-         .......  .,ldcdloolo0XkOk0k:l:ll'...  .          
-         .......  :O00xc::ckKXXKXXXKooloOOl.  ..          $MEM
-         .....'d::c0XOOl;:xk0XXXXXXX0l,:k0c..',.          $BAT
-        ........,dk0XXK0KXXXXXXXXXXXXK0O0k':cll           
-        ......   .dKXXXXXXXXXXXXOKXXXXXX0,,llcc           $SHELL
-        ....'      :0XXXXXXXXXXKO0XXXXKO, :lll:.          $TERM
-       ....;l:c'.,.';o0XXXXXXXKKXXXXKOc.  :lllc'          
-       ..'cllllllllllllox0XXXXXXXKOdlc;.  :llllc'         
-      ..'clllllllllllllllcldkOOkdollll:...;lllllc'        
-       .,llllllllllllllllllc;;ccccllllc...,llllllc,       
-      ...cllllllllllllc:,.....:o...,:cc'..'ccccccc:       
-     .....;cllllllll:'........'........'...cccccc,        
-    ........,cclc:,........................:cc:,..        
-  .................................................       
- ...................................................      
- ...............................c,..................      
-................................c,...................     
-.....................................................     
-......................................................    
-......................................................    
-......................................................    
-.................................',...................    
-.................................,l....................   
-   
+                ........              
+             .........xx...           
+      ..xx.......xoo@@ooooox..        $USER@$(/bin/hostname)
+     ..o@o.....x@@@@@@oxxo@@x..       
+     ..xx.....o@@@@@ooxxxxo@@o..      $OS
+       .......ooxx.    ..  ..ox.      $VERS
+       ........  ............ ...     $UPTIME
+       ......  .....o@...........     $CPU
+       .....\.xxo..x@@xx.x.x.....     
+       ...../xoooxoo@@@@@xxoo.. .     $MEM
+      .....xxo@@oxo@@@@@@oxo@x...     $BAT
+      ....  x@@@@@@@@@@@@@@@oxox.     
+      .....  .o@@@@@ccc@@@@o.xox.     $SHELL
+     ...xooxxxxoo@@@@@@@@ox..xxxx.    $TERM
+     ..xoooooooooxooooooxxx..xxxxx.   
+     ..xoooooooxxx...x..xxx..xxxxxx   
+    ....xxxxxxx..............xxxxx    
+   ................................   
+  ..................................  
+ .....................x.............  
+ ...................................  
+..................................... 
+..................................... 
+ ......................x............. 
 EOF
 
 unset MEM MEMF MEMT BAT CPU UPTIME VERS OS COLOR
