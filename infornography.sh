@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "$COLORTERM" ] || [ "${TERM#'*color'}" ]; then
+if test "$COLORTERM" || test "${TERM#'*color'}" ; then
     COLOR=true
 fi
 
@@ -42,32 +42,43 @@ case $OS in
 esac
 
 cat << EOF
-                   .      .             
-              .               .           
-                                 .       
-          .                                 $USER@$(/bin/hostname)
-                                    .       
-        .              ...xc. .             $OS
-        .            '.kdlKOl.;;.    .      $VERS
-        .         ..,koxdokKKkkOc.  ..      $UPTIME
-         \/.'c... ,xOKxdlxOKXKK0xl..        $CPU    
-         /\.dxdoxk0KKkO:.oXXXXK:,;          
-         .  .doxKXXXXX000XXXXXKxd'          $MEM
-              .l0XXXXXXXXXXX00OXK.          $BAT
-              .xdOKXXXXXXXXK0KKK:           
-              :xxxk0KXXXXXXKKKd.            $SHELL
-         .;;,:xxxxxxdxOKXXXKo'              $TERM 
-       .;llccdxxxxxxxxlc;,,.            
-     'ooloxxdoldxxxxxxocx:..            
-    ;kOOkkkOOkxoldxxxxk0kOk: ....'...   
-   .xc'',;:codkOkdl;,,::xOx;.,;,'cxdc   
-   ............,:lxd'   xx'..','',;;o.  
-   ................':: .:....l0ooxkkk,  
-  ..........................,xKK0xkOOl  
-  ............................'dxoO0OO. 
-  ..............................:codx0. 
- ............. ............... ..cddxk' 
- .............. ..............   lxdc'. 
- ..............................  .,.....
-...............................  .......
+                        ..........                        
+                   ..''..'''''''''''..                    
+                 .''''''''';:clooool:,''.                 
+        .',:::,'''''''''cdO0000kc:clkOd:'''.              
+       ''cO0Ol''''''''ck0000000Ol'..l000d,''.             
+      .'.cO0l''''''',k000000000000OO00000O:'.             
+       .'.,c'.....''x0000000kdlc:;;;;:okO0O;'.            
+         ..........;O00Od:'.            .ckd'..           $USER@$(/bin/hostname)
+          .........,xc'        .......    .,...           
+          ..........     ................    ...          $OS
+          ........     ......dxc...........   ..          $VERS
+         ........   ...c...''0Xx:............. ..         $UPTIME
+         ........  .;o.x,.,;c0Xkl;,..c.,...... ..         $CPU
+         .......  .,ldcdloolo0XkOk0k:l:ll'...  .          
+         .......  :O00xc::ckKXXKXXXKooloOOl.  ..          $MEM
+         .....'d::c0XOOl;:xk0XXXXXXX0l,:k0c..',.          $BAT
+        ........,dk0XXK0KXXXXXXXXXXXXK0O0k':cll           
+        ......   .dKXXXXXXXXXXXXOKXXXXXX0,,llcc           $SHELL
+        ....'      :0XXXXXXXXXXKO0XXXXKO, :lll:.          $TERM
+       ....;l:c'.,.';o0XXXXXXXKKXXXXKOc.  :lllc'          
+       ..'cllllllllllllox0XXXXXXXKOdlc;.  :llllc'         
+      ..'clllllllllllllllcldkOOkdollll:...;lllllc'        
+       .,llllllllllllllllllc;;ccccllllc...,llllllc,       
+      ...cllllllllllllc:,.....:o...,:cc'..'ccccccc:       
+     .....;cllllllll:'........'........'...cccccc,        
+    ........,cclc:,........................:cc:,..        
+  .................................................       
+ ...................................................      
+ ...............................c,..................      
+................................c,...................     
+.....................................................     
+......................................................    
+......................................................    
+......................................................    
+.................................',...................    
+.................................,l....................   
+   
 EOF
+
+unset MEM MEMF MEMT BAT CPU UPTIME VERS OS COLOR
