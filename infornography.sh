@@ -40,7 +40,7 @@ case $OS in
         fi
         ;;
     *Linux)
-        CPU="$(awk '/model name/{$1=$2=$3=""; print $0}' | uniq)"
+        CPU="$(awk '/model name/{$1=$2=$3=""; print $0}' /proc/cpuinfo | sed 's/^[ \t]*//' | uniq)"
         UPTIME="$(awk '{print int($1/3600)}' /proc/uptime) hours up"
         MEMF="$(awk '/MemAvailable/{print int($2/10^3)}' /proc/meminfo)"
         if test -z "$MEMF"; then
