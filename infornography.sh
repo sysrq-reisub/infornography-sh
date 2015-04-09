@@ -1,9 +1,7 @@
 #!/bin/sh
 
 setcolors() {
-    if test "$COLORTERM" || test "${TERM#'*color'}" ; then
-	COLOR=true
-    else
+    if test -z "$COLORTERM" || test -z "${TERM#'*color'}" ; then
 	return
     fi
 }
@@ -40,13 +38,16 @@ case $OS in
         fi
         ;;
     *Linux)
-        CPU="$(awk '/model name/{$1=$2=$3=""; sub(/ */,""); print $0}' /proc/cpuinfo | uniq)"
-        UPTIME="$(awk '{print int($1/3600)}' /proc/uptime) hours up"
+        CPU="$(awk '/model name/{$1=$2=$3=""; sub(/ */,""); print $0}' \
+                /proc/cpuinfo | uniq)"
+        T="$(awk '{print int($1)}' /proc/uptime)"
+	UPTIME="$(printf '%dd %dh %dm\n' \
+		$(( $T/86400 )) $(( $T%86400/3600 )) $(( $T%3600/60 )))"
         MEMF="$(awk '/MemAvailable/{print int($2/10^3)}' /proc/meminfo)"
         if test -z "$MEMF"; then
             MEMF="$(awk '/MemFree/{print int($2/10^3)}' /proc/meminfo)"
         fi
-        MEMT="$(awk '/MemTotal/{print int($2/10^3)}' /proc/meminfo)"       
+        MEMT="$(awk '/MemTotal/{print int($2/10^3)}' /proc/meminfo)"
         MEM="$(( MEMT-MEMF ))/${MEMT}M"
         ;;
     *)
