@@ -23,7 +23,7 @@ BAT="battery: $(acpi | awk '{print $4}')"
 case $OS in
     *BSD)
         CPU="$(sysctl -n hw.model)"
-        UPTIME="$(uptime | awk '{gsub(/,/,"") print $3 $4)}')"
+        UPTIME="$(uptime | awk '{gsub(/,/,""); print ($3, $4)}')"
         MEM="$(top -n 1 -b | awk '/Memory/{print $3}')" 
         if test -z "$MEM"; then
             if test -f /proc/meminfo; then
