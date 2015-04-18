@@ -39,6 +39,9 @@ case $OS in
             fi
         fi
         ;;
+    Darwin)
+	CPU="$(sysctl -n machdep.cpu.brand_string)"
+	;;
     *Linux)
         CPU="$(awk '/model name/{$1=$2=$3=""; sub(/ */,""); print $0}' \
                 /proc/cpuinfo | uniq)"
@@ -51,13 +54,16 @@ case $OS in
 	    MEMC="$(awk '/Cached/{print int($2/10^3)}' /proc/meminfo)"
 	    MEMA="$(( MEMF+MEMC ))"
         
-fi
+        fi
         MEMT="$(awk '/MemTotal/{print int($2/10^3)}' /proc/meminfo)"
         MEM="$(( MEMT-MEMA ))/${MEMT}M"
         ;;
     *)
         ;;
 esac
+
+test -z $CPU && CPU="Unknown"
+test -z $MEM && MEM="Unknown"
 
 cat << EOF
                 ........              
@@ -85,4 +91,4 @@ cat << EOF
 .......................x............. 
 EOF
 
-unset MEM MEMF MEMA MEMC MEMT BAT CPU UPTIME VERS OS COLOR
+unset MEM MEMF MEMA MEMC MEMT BAT CPU UPTIME VERS OS
