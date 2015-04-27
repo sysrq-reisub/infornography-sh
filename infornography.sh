@@ -62,8 +62,8 @@ case $OS in
         ;;
 esac
 
-test -z $CPU && CPU="Unknown"
-test -z $MEM && MEM="Unknown"
+test -z "$CPU" && CPU="Unknown"
+test -z "$MEM" && MEM="Unknown"
 
 cat << EOF
                 ........              
