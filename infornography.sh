@@ -1,5 +1,5 @@
 #!/bin/sh
-#test
+
 setcolors() {
     if test -z "$COLORTERM" || test -z "${TERM#'*color'}" ; then
 	return
